@@ -19,14 +19,14 @@ self.addEventListener("install", event=> {
         caches.open(staticCache).then((cache)=> {
             return cache.addAll(
                 [
-                    // "/images/image0.jpg",
-                    // "/images/image1.jpg",
-                    // "/images/image2.jpg",
-                    // "/images/image3.jpg",
-                    // "/images/image4.jpg",
-                    // "/styles/styles.css",
-                    "index.html",
-                    "app.js"
+                    "./images/image0.jpg",
+                    "./images/image1.jpg",
+                    "./images/image2.jpg",
+                    "./images/image3.jpg",
+                    "./images/image4.jpg",
+                    "./styles/styles.css",
+                    "./index.html",
+                    "./app.js"
                 ]
             );
         })
