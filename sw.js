@@ -1,42 +1,42 @@
-const staticCache = "my-cache-1";
+const cacheName= "v1";
 
-self.addEventListener("activate", event => {
-    event.waitUntil(
+self.addEventListener("install", e => {
+    e.waitUntil(
+        caches.open(cacheName)
+        .then(cache => {
+            cache.addAll(
+                [
+                    "images/image0.jpg",
+                    "images/image1.jpg",
+                    "images/image2.jpg",
+                    "images/image3.jpg",
+                    "images/image4.jpg",
+                    "styles/styles.css",
+                    "index.html",
+                    "app.js"
+                ]
+            )
+        }).then(() => self.skipWaiting())
+    );
+});
+
+
+self.addEventListener("activate", e => {
+    e.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheNames.filter(cacheName => {
-                    return cacheName.startsWith("my-") && cacheName !== staticCache
-                }).map(cacheName => {
-                    return caches.delete(cacheName);
+                cacheNames.map(cache => {
+                    if(cache !== cacheName) {
+                        return caches.delete(cache);
+                    }
                 })
             );
         })
     );
 });
 
-self.addEventListener("install", event=> {
-    event.waitUntil(
-        caches.open(staticCache).then((cache)=> {
-            return cache.addAll(
-                [
-                    "./images/image0.jpg",
-                    "./images/image1.jpg",
-                    "./images/image2.jpg",
-                    "./images/image3.jpg",
-                    "./images/image4.jpg",
-                    "./styles/styles.css",
-                    "./index.html",
-                    "./app.js"
-                ]
-            );
-        })
-    );
-});
 
-self.addEventListener("fetch", (event)=> {
-    event.respondWith(
-        caches.match(event.request).then((response)=> {
-            return response || fetch(event.request)
-        })
-    );
+
+self.addEventListener("fetch", e => {
+    e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
 })
